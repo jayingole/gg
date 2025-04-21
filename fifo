@@ -1,0 +1,56 @@
+def fifo(pages, n):
+    frame = []
+    faults = 0
+    index = 0
+    for page in pages:
+        if page not in frame:
+            faults += 1
+            if len(frame) < n:
+                frame.append(page)
+            else:
+                frame[index] = page
+                index = (index + 1) % n
+        print(frame)
+    print("Page Faults:", faults)
+
+def opt(pages, n):
+    frame = []
+    faults = 0
+    for i in range(len(pages)):
+        if pages[i] not in frame:
+            faults += 1
+            if len(frame) < n:
+                frame.append(pages[i])
+            else:
+                future = [pages[i+1:].index(p) if p in pages[i+1:] else float('inf') for p in frame]
+                frame[future.index(max(future))] = pages[i]
+        print(frame)
+    print("Page Faults:", faults)
+
+def lru(pages, n):
+    frame = []
+    last_used = {}
+    time = 0
+    faults = 0
+    for page in pages:
+        if page not in frame:
+            faults += 1
+            if len(frame) < n:
+                frame.append(page)
+            else:
+                lru_page = min(last_used, key=last_used.get)
+                frame[frame.index(lru_page)] = page
+            last_used.pop(lru_page, None)
+        last_used[page] = time
+        time += 1
+        print(frame)
+    print("Page Faults:", faults)
+
+pages = list(map(int, input("Enter page reference string: ").split()))
+n = int(input("Enter number of frames: "))
+print("FIFO:")
+fifo(pages, n)
+print("\nOPT:")
+opt(pages, n)
+print("\nLRU:")
+lru(pages, n)

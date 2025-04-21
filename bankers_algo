@@ -1,0 +1,66 @@
+print("Name:Rohan Fernandes Roll No.:41 Class/Section:Se/CMPN-A")
+class BankersAlgorithm:
+    def _init_(self, n, m):
+        self.n = n  # Number of processes
+        self.m = m  # Number of resource types
+        self.available = [0] * m
+        self.max = [[0] * m for _ in range(n)]
+        self.allocation = [[0] * m for _ in range(n)]
+        self.need = [[0] * m for _ in range(n)]
+    def input_resources(self):
+        print("Enter available resources (space-separated):")
+        self.available = list(map(int, input().split()))
+        print("Enter maximum resources for each process:")
+        for i in range(self.n):
+            print(f"Process {i}: ", end="")
+            self.max[i] = list(map(int, input().split()))
+        print("Enter allocated resources for each process:")
+        for i in range(self.n):
+            print(f"Process {i}: ", end="")
+            self.allocation[i] = list(map(int, input().split()))
+        # Calculate the need matrix
+        for i in range(self.n):
+            for j in range(self.m):
+                self.need[i][j] = self.max[i][j] - self.allocation[i][j]
+    def is_safe(self):
+        work = self.available[:]
+        finish = [False] * self.n
+        safe_sequence = []
+        step = 1  # To track the step number
+        while len(safe_sequence) < self.n:
+            found = False
+            for i in range(self.n):
+                if not finish[i] and all(self.need[i][j] <= work[j] for j in range(self.m)):
+                    print(f"\nStep {step}: Process {i} can be executed.")
+                    print(f"Available resources before:\t\t\t {work}")             
+                    # Calculate the available resources after executing the process
+                    print(f"Allocated resources of Process {i}:\t+{self.allocation[i]}")
+                    for j in range(self.m):
+                        work[j] += self.allocation[i][j]
+                    print(f"Available resources after:\t\t\t {work}")
+                    print(f"Safe sequence so far: {safe_sequence + [i]}")
+                    finish[i] = True
+                    safe_sequence.append(i)
+                    step += 1
+                    found = True
+                    break  # Restart the search if not found:
+            if not found:
+                break  # No process can be satisfied
+        if len(safe_sequence) == self.n:
+            print("\nSystem is in a safe state.")
+            print("Final Safe sequence is:", safe_sequence)
+        else:
+            print("\nSystem is not in a safe state.")
+    def display_total_resources(self):
+        total_resources = [self.available[j] for j in range(self.m)]
+        for i in range(self.n):
+            for j in range(self.m):
+                total_resources[j] += self.allocation[i][j]
+        print("\nTotal resources in the system:", total_resources)
+if _name_ == "_main_":
+    n = int(input("Enter number of processes: "))
+    m = int(input("Enter number of resource types: "))
+    banker = BankersAlgorithm(n, m)
+    banker.input_resources()
+    banker.is_safe()
+    banker.display_total_resources()

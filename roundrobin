@@ -1,0 +1,36 @@
+print("ROUND ROBIN SCHEDULING")
+def round_robin(processes, arrival_time, burst_time, quantum):
+    n = len(processes)
+    rt = burst_time[:]
+    wt = [0] * n
+    tat = [0] * n
+    ft = [0] * n
+    time = 0
+    done = False
+    while not done:
+        done = True
+        for i in range(n):
+            if rt[i] > 0 and arrival_time[i] <= time:
+                done = False
+                if rt[i] > quantum:
+                    time += quantum
+                    rt[i] -= quantum
+                else:
+                    time += rt[i]
+                    ft[i] = time
+                    wt[i] = time - arrival_time[i] - burst_time[i]
+                    rt[i] = 0
+    for i in range(n):
+        tat[i] = ft[i] - arrival_time[i]
+
+    print("\nProcess\tAT\tBT\tFT\tWT\tTAT")
+    for i in range(n):
+        print(f"P{i}\t{arrival_time[i]}\t{burst_time[i]}\t{ft[i]}\t{wt[i]}\t{tat[i]}")
+    print(f"\nAverage Waiting Time: {sum(wt)/n:.2f}")
+    print(f"Average Turnaround Time: {sum(tat)/n:.2f}")
+
+n = int(input("Enter number of processes: "))
+at = [int(input(f"Enter arrival time of P{i}: ")) for i in range(n)]
+bt = [int(input(f"Enter burst time of P{i}: ")) for i in range(n)]
+qt = int(input("Enter time quantum: "))
+round_robin(list(range(n)), at, bt, qt)

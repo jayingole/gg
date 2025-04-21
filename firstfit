@@ -1,0 +1,50 @@
+def first_fit(blocks, processes):
+    print("\nFirst Fit Allocation:")
+    alloc = [-1] * len(processes)
+    for i in range(len(processes)):
+        for j in range(len(blocks)):
+            if blocks[j] >= processes[i]:
+                alloc[i] = j
+                blocks[j] -= processes[i]
+                break
+    print("Process No\tSize\tBlock No")
+    for i in range(len(processes)):
+        print(f"{i}\t\t{processes[i]}\t\t{alloc[i] if alloc[i] != -1 else 'Not Allocated'}")
+
+def best_fit(blocks, processes):
+    print("\nBest Fit Allocation:")
+    alloc = [-1] * len(processes)
+    for i in range(len(processes)):
+        best = -1
+        for j in range(len(blocks)):
+            if blocks[j] >= processes[i]:
+                if best == -1 or blocks[j] < blocks[best]:
+                    best = j
+        if best != -1:
+            alloc[i] = best
+            blocks[best] -= processes[i]
+    print("Process No\tSize\tBlock No")
+    for i in range(len(processes)):
+        print(f"{i}\t\t{processes[i]}\t\t{alloc[i] if alloc[i] != -1 else 'Not Allocated'}")
+
+def worst_fit(blocks, processes):
+    print("\nWorst Fit Allocation:")
+    alloc = [-1] * len(processes)
+    for i in range(len(processes)):
+        worst = -1
+        for j in range(len(blocks)):
+            if blocks[j] >= processes[i]:
+                if worst == -1 or blocks[j] > blocks[worst]:
+                    worst = j
+        if worst != -1:
+            alloc[i] = worst
+            blocks[worst] -= processes[i]
+    print("Process No\tSize\tBlock No")
+    for i in range(len(processes)):
+        print(f"{i}\t\t{processes[i]}\t\t{alloc[i] if alloc[i] != -1 else 'Not Allocated'}")
+
+blocks = list(map(int, input("Enter memory block sizes: ").split()))
+processes = list(map(int, input("Enter process sizes: ").split()))
+first_fit(blocks[:], processes)
+best_fit(blocks[:], processes)
+worst_fit(blocks[:], processes)

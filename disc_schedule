@@ -1,0 +1,28 @@
+req = list(map(int, input("Requests: ").split()))
+start = int(input("Start Head: "))
+
+def fcfs():
+    total = abs(start - req[0])
+    for i in range(1, len(req)): total += abs(req[i] - req[i-1])
+    print("FCFS Head Movement:", total)
+
+def sstf():
+    done = [False]*len(req)
+    head, total = start, 0
+    for _ in req:
+        dist = [abs(r - head) if not done[i] else float('inf') for i, r in enumerate(req)]
+        idx = dist.index(min(dist))
+        total += abs(head - req[idx])
+        head = req[idx]; done[idx] = True
+    print("SSTF Head Movement:", total)
+
+def look():
+    left = sorted([r for r in req if r < start], reverse=True)
+    right = sorted([r for r in req if r >= start])
+    seq = right + left
+    total = abs(start - seq[0]) + sum(abs(seq[i] - seq[i-1]) for i in range(1, len(seq)))
+    print("LOOK Head Movement:", total)
+
+fcfs()
+sstf()
+look()
